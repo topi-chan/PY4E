@@ -10,6 +10,7 @@ class Tetris:
         self.s_shape = [[0,1], [1,1], [1,0]]
         self.o_shape = [[1,1], [1,1]]
         self.current_shape = None
+        self.board_line = [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1]
         self.boards=[[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
                     [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
                     [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
@@ -33,17 +34,18 @@ class Tetris:
                     [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]]
         self.prev_boards = []
         self.current_boards = []
+        self.new_boards = []
         self.fixed_boards = []
         self.current_pos = []
         self.new_pos = []
 
     def board_screen(self):
-        board_func = self.boards
         num_of_ones = sum(num.count(1) for num in self.boards)
+        board_func=self.boards
         while True:
             shape = random.choice([self.i_shape, self.l_shape, self.j_shape,
                     self.s_shape, self.o_shape])
-            position = random.randint(1,21)
+            position = random.randint(1,20)
             m = 0
             for i in range(len(shape)):
                 sub_shape = shape[m]
@@ -54,35 +56,76 @@ class Tetris:
                     pos+=1
                     n+=1
                 m+=1
-            print(num_of_ones)
-            if num_of_ones+4 == (sum(num.count(1) for num in board_func)):
-                self.boards=board_func[:]
-                self.current_shape=shape
+            if (num_of_ones+4) == (sum(num.count(1) for num in board_func)):
                 break
-            board_func=self.boards
+            else:
+                board_func=[[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+                            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+                            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+                            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+                            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+                            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+                            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+                            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+                            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+                            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+                            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+                            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+                            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+                            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+                            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+                            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+                            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+                            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+                            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+                            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+                            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]]
+        self.boards=board_func
+        self.current_shape=shape
         for board in self.boards:
             print(*["*" if elem==1 else " " for elem in board], sep='')
-            self.current_pos.append([i for i,x in enumerate(board) if x == 1])
+#            self.current_pos.append([i for i,x in enumerate(board) if x == 1])
 
     def first_move(self):
+        self.new_boards = self.boards[:-1]
         while True:
             move = input()
             if move == "d":
-                print(self.current_pos)
-                for pos in self.current_pos[:-1]:
-                    for p in pos:
-                        if p !=0 and p !=21:
-                            p+=1
-                            self.new_pos.append(p)
+                for board in self.new_boards:
+                    print(*["*" if elem==1 else " " for elem in board], sep='')
+                print(self.boards)
+                print("**********////////////*********")
+                for i, board in enumerate (self.boards[:-1]):
+                    if board.count(1) > 2:
+#                        self.new_boards[i] = self.board_line
+                        self.new_boards[i+1] = self.boards[i]
+                for i, board in enumerate (self.new_boards):
+                    print(board)
+                    if board.count(1) > 2:
+                        self.new_boards[i] = self.board_line
+                        break
+                    # for i, item in enumerate (board):
+                    #     if i != 0 and i != 21 and item == 1:
+                    #         self.current_boards.append(i)
 
-                print(self.new_pos)
+
+
+                # print(self.current_pos)
+                # for pos in self.current_pos[:-1]:
+                #     for p in pos:
+                #         if p !=0 and p !=21:
+                #             p+=1
+                #             self.new_pos.append(p)
+                #
+                # print(self.new_pos)
 #                print(self.current_pos)
                 # for board in self.boards:
                 #     for b in board:
                 #         print(b)
                 #         if b != 0 and b != 21:
                 #             b += 1
-                for board in self.boards:
+                self.new_boards.append([1].copy()*22)
+                for board in self.new_boards:
                     print(*["*" if elem==1 else " " for elem in board], sep='')
 
                 # m = 0
@@ -119,33 +162,3 @@ class Tetris:
 tetr=Tetris()
 tetr.board_screen()
 tetr.first_move()
-
-
-# n=0
-# l = 0
-# for i in range(len(i_shape)):
-#     boards[n][position:len(i_shape)] = i_shape[l]
-#     l = l+1
-# for p in boards: print (p)
-
-#print(len(boards))
-#boards[0][7].insert(1, i_shape[0])
-#print(i_shape[0])
-#
-# for board in boards:
-#     print(*["*" if elem==1 else " " for elem in board], sep='')
-#
-# print(s_shape[1])
-
-# print(*["*" if elem==1 else " " for elem in board], sep='')
-#
-# i_shape = [1,1,1,1]
-# l_shape = [1],[1],[1,1]
-# j_shape = [0,1],[0,1],[1,1]
-# s_shape = [0,1], [1,1], [1]
-# o_shape = [1,1], [1,1]
-#
-# boards = [[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-#         [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],]
-# for board in boards:
-#     print(*["*" if elem==1 else " " for elem in board], sep='')
