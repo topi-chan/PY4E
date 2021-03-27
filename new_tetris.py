@@ -101,50 +101,56 @@ class Tetris:
         while True:
             if num_of_ones != (sum(num.count(1) for num in self.new_boards)):
                 self.redraw()
+            for board in self.new_boards:
+                print(*["*" if elem==1 else " " for elem in board], sep='')
             move = input()
+            for k in self.pos_dict.keys():
+                for item in self.pos_dict.get(k):
+                    self.new_boards[k][item]=0
 
             if move == "d":
                 print(self.pos_dict)
                 for k in self.pos_dict.keys():
                     for item in self.pos_dict.get(k):
-                        self.new_boards[k][item]=0
-                for k in self.pos_dict.keys():
-                    for item in self.pos_dict.get(k):
                         self.new_boards[k+1][item+1]=1
                 self.pos_dict = {k+1: v for k,v in self.pos_dict.items()}
                 self.pos_dict = {k: [x+1 for x in v] for k,v in self.pos_dict.items()}
-                for value in self.pos_dict.values():
-                    [x+1 for x in value]
                 print(self.pos_dict)
-                for board in self.new_boards:
-                    print(*["*" if elem==1 else " " for elem in board], sep='')
                 continue
 
             if move == "a":
                 print(self.pos_dict)
                 for k in self.pos_dict.keys():
                     for item in self.pos_dict.get(k):
-                        self.new_boards[k][item]=0
-                for k in self.pos_dict.keys():
-                    for item in self.pos_dict.get(k):
                         self.new_boards[k+1][item-1]=1
-                # if num_of_ones != (sum(num.count(1) for num in self.new_boards)):
-                #     self.redraw()
                 self.pos_dict = {k+1: v for k,v in self.pos_dict.items()}
                 self.pos_dict = {k: [x-1 for x in v] for k,v in self.pos_dict.items()}
-                for value in self.pos_dict.values():
-                    [x+1 for x in value]
                 print(self.pos_dict)
-                for board in self.new_boards:
-                    print(*["*" if elem==1 else " " for elem in board], sep='')
-#                self.boards = self.new_boards
                 continue
+
+            # if move == "w":
+            #     print(self.pos_dict)
+            #     if self.current_shape == [[1,1], [1,1]]:
+            #         for k in self.pos_dict.keys():
+            #             for item in self.pos_dict.get(k):
+            #                 self.new_boards[k][item]=0
+            #         for k in self.pos_dict.keys():
+            #             for item in self.pos_dict.get(k):
+            #                 self.new_boards[k+1][item+1]=1
+            #         self.pos_dict = {k+1: v for k,v in self.pos_dict.items()}
+            #         self.pos_dict = {k: [x+1 for x in v] for k,v in self.pos_dict.items()}
+            #     elif self.current_shape == [[1,1,1,1]]:
+            #         for k in self.pos_dict.keys():
+            #             for item in self.pos_dict.get(k):
+            #                 self.new_boards[k][item]=0
+            #
+            #         self.pos_dict.update()
+            #     print(self.pos_dict)
+            #     continue
 
             elif move == "q":
                 quit()
             else:
-                for board in self.boards:
-                    print(*["*" if elem==1 else " " for elem in board], sep='')
                 continue
 
 
