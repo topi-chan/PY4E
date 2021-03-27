@@ -39,6 +39,7 @@ class Tetris:
         self.current_pos = []
         self.pos_dict = {}
         self.new_pos = []
+        self.new_pos_dict = {}
 
     def board_screen(self):
         num_of_ones = sum(num.count(1) for num in self.boards)
@@ -92,6 +93,7 @@ class Tetris:
         for i,pos in enumerate(self.current_pos[:-1]):
             if len(pos)>0:
                 self.pos_dict[i] = pos
+        self.first_move2()
 
     def first_move(self):
         self.new_boards = self.boards[:-1]
@@ -164,9 +166,162 @@ class Tetris:
                     print(*["*" if elem==1 else " " for elem in board], sep='')
                 continue
 
+
+
+    def first_move2(self):
+        num_of_ones = sum(num.count(1) for num in self.boards)
+        self.new_boards = self.boards
+        while True:
+            move = input()
+
+            if move == "d":
+                print(self.pos_dict)
+                for k in self.pos_dict.keys():
+                    single_list = self.new_boards[k]
+                    for item in self.pos_dict.get(k):
+                        self.new_boards[k][item]=0
+                        print(k, item)
+                for k in self.pos_dict.keys():
+                    single_list = self.new_boards[k]
+                    for item in self.pos_dict.get(k):
+                        self.new_boards[k+1][item+1]=1
+                        print(k, item)
+                print(self.current_pos)
+                if num_of_ones != (sum(num.count(1) for num in self.new_boards)):
+                    self.next_move()
+                self.current_pos = []
+                for board in self.new_boards:
+                    print(*["*" if elem==1 else " " for elem in board], sep='')
+                    self.current_pos.append([i for i, x in enumerate(board) if x == 1])
+                for pos in self.current_pos:
+                    pos.remove(0)
+                    pos.remove(21)
+                self.pos_dict = {}
+                for i,pos in enumerate(self.current_pos[:-1]):
+                    if len(pos)>0:
+                        self.pos_dict[i] = pos
+                self.boards = self.new_boards
+                continue
+
+
+            if move == "a":
+                print(self.pos_dict)
+                for k in self.pos_dict.keys():
+                    single_list = self.new_boards[k]
+                    for item in self.pos_dict.get(k):
+                        self.new_boards[k][item]=0
+                        print(k, item)
+                for k in self.pos_dict.keys():
+                    single_list = self.new_boards[k]
+                    for item in self.pos_dict.get(k):
+                        self.new_boards[k+1][item-1]=1
+                        print(k, item)
+                print(self.current_pos)
+                if num_of_ones != (sum(num.count(1) for num in self.new_boards)):
+                    self.next_move()
+                self.current_pos = []
+                for board in self.new_boards:
+                    print(*["*" if elem==1 else " " for elem in board], sep='')
+                    self.current_pos.append([i for i, x in enumerate(board) if x == 1])
+                for pos in self.current_pos:
+                    pos.remove(0)
+                    pos.remove(21)
+                self.pos_dict = {}
+                for i,pos in enumerate(self.current_pos[:-1]):
+                    if len(pos)>0:
+                        self.pos_dict[i] = pos
+                self.boards = self.new_boards
+                continue
+
+
+            elif move == "q":
+                quit()
+            else:
+                for board in self.boards:
+                    print(*["*" if elem==1 else " " for elem in board], sep='')
+                continue
+
+
+    def next_move(self):
+        self.current_pos = []
+        self.pos_dict = {}
+        for board in self.boards:
+            self.current_pos.append([i for i, x in enumerate(board) if x == 1])
+        for pos in self.current_pos:
+            pos.remove(0)
+            pos.remove(21)
+        for i,pos in enumerate(self.current_pos[:-1]):
+            if len(pos)>0:
+                self.pos_dict[i] = pos
+        for board in self.boards:
+            print(*["*" if elem==1 else " " for elem in board], sep='')
+            self.current_pos.append([i for i, x in enumerate(board) if x == 1])
+        num_of_ones = sum(num.count(1) for num in self.boards)
+        board_func=self.boards
+        while True:
+            shape = random.choice([self.i_shape, self.l_shape, self.j_shape,
+                    self.s_shape, self.o_shape])
+            position = random.randint(1,20)
+            m = 0
+            for i in range(len(shape)):
+                sub_shape = shape[m]
+                n = 0
+                pos = position
+                for i in range(len(sub_shape)):
+                    if sub_shape[n] == 1 and pos<=21: board_func[m][pos] = 1
+                    pos+=1
+                    n+=1
+                m+=1
+            if (num_of_ones+4) == (sum(num.count(1) for num in board_func)):
+                break
+            else:
+                board_func=[[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+                            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+                            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+                            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+                            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+                            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+                            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+                            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+                            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+                            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+                            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+                            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+                            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+                            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+                            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+                            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+                            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+                            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+                            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+                            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+                            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]]
+        for board in board_func:
+            self.new_pos.append([i for i, x in enumerate(board) if x == 1])
+        for pos in self.new_pos:
+            pos.remove(0)
+            pos.remove(21)
+        for i,pos in enumerate(self.new_pos[:-1]):
+            if len(pos)>0:
+                self.new_pos_dict[i] = pos
+        print(self.pos_dict)
+        print("xxx")
+        print(self.new_pos_dict)
+        for key in self.pos_dict.keys() & self.new_pos_dict.keys():
+            del self.new_pos_dict[key]
+        print("oooo")
+        print(self.new_pos_dict)
+        # mylist = list(dict.fromkeys(self.current_pos))
+        # for pos in self.current_pos:
+        #     print(pos)
+        self.boards=board_func
+        self.current_shape=shape
+        for board in self.boards:
+            print(*["*" if elem==1 else " " for elem in board], sep='')
+
+
 tetr=Tetris()
 tetr.board_screen()
-tetr.first_move()
 
 
 
