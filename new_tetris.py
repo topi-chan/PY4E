@@ -32,7 +32,7 @@ class Tetris:
                     [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
                     [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]]
         self.new_boards = []
-#        self.prev_boards = []
+#        self.prev_boards = [] #to implement better board memory
         self.current_pos = []
         self.pos_dict = {}
         self.new_pos = []
@@ -40,6 +40,8 @@ class Tetris:
 
 
     def draw_screen(self):
+        '''Draws first screen, makes first block not overlaping with borders.'''
+
         num_of_ones = sum(num.count(1) for num in self.boards)
         board_func=self.boards
         while True:
@@ -95,9 +97,17 @@ class Tetris:
 
 
     def move(self):
+        '''
+        Operate block fragments on the board; implemented for a/d and partially
+        for w. Pressing q allows a player to quit game, and pressing any other
+        key refreshes currently operated block into new one.
+        '''
+
+
         num_of_ones = sum(num.count(1) for num in self.boards)
         self.new_boards = self.boards
-        print(self.pos_dict)
+ #'print' here and below - if uncommented, user can see changing coordinates
+#        print(self.pos_dict)
         while True:
             if num_of_ones != (sum(num.count(1) for num in self.new_boards)):
                 self.redraw()
@@ -109,44 +119,50 @@ class Tetris:
                     self.new_boards[k][item]=0
 
             if move == "d":
-                print(self.pos_dict)
+#                print(self.pos_dict)
                 for k in self.pos_dict.keys():
                     for item in self.pos_dict.get(k):
                         self.new_boards[k+1][item+1]=1
                 self.pos_dict = {k+1: v for k,v in self.pos_dict.items()}
                 self.pos_dict = {k: [x+1 for x in v] for k,v in self.pos_dict.items()}
-                print(self.pos_dict)
+#                print(self.pos_dict)
                 continue
 
             if move == "a":
-                print(self.pos_dict)
+#                print(self.pos_dict)
                 for k in self.pos_dict.keys():
                     for item in self.pos_dict.get(k):
                         self.new_boards[k+1][item-1]=1
                 self.pos_dict = {k+1: v for k,v in self.pos_dict.items()}
                 self.pos_dict = {k: [x-1 for x in v] for k,v in self.pos_dict.items()}
-                print(self.pos_dict)
+#                print(self.pos_dict)
                 continue
 
-            # if move == "w":
-            #     print(self.pos_dict)
-            #     if self.current_shape == [[1,1], [1,1]]:
-            #         for k in self.pos_dict.keys():
-            #             for item in self.pos_dict.get(k):
-            #                 self.new_boards[k][item]=0
-            #         for k in self.pos_dict.keys():
-            #             for item in self.pos_dict.get(k):
-            #                 self.new_boards[k+1][item+1]=1
-            #         self.pos_dict = {k+1: v for k,v in self.pos_dict.items()}
-            #         self.pos_dict = {k: [x+1 for x in v] for k,v in self.pos_dict.items()}
-            #     elif self.current_shape == [[1,1,1,1]]:
-            #         for k in self.pos_dict.keys():
-            #             for item in self.pos_dict.get(k):
-            #                 self.new_boards[k][item]=0
-            #
-            #         self.pos_dict.update()
-            #     print(self.pos_dict)
-            #     continue
+            if move == "w":
+#                print(self.pos_dict)
+                if self.current_shape == [[1,1], [1,1]]:
+                    for k in self.pos_dict.keys():
+                        for item in self.pos_dict.get(k):
+                            self.new_boards[k+1][item+1]=1
+                    self.pos_dict = {k+1: v for k,v in self.pos_dict.items()}
+                    self.pos_dict = {k: [x+1 for x in v] for k,v in self.pos_dict.items()}
+                elif self.current_shape == [[1,1,1,1]]:
+                    self.pos_dict = {k+1: v for k,v in self.pos_dict.items()}
+                    row = list(self.pos_dict.keys())[0]
+                    col = self.pos_dict.get(row)[-1] #0 for 's' key
+                    for i in range(4):
+                        self.new_boards[row-i][col] = 1
+                    pass
+                    #unfinished block: update pos_dict
+                    #
+                    #{9: [10, 11, 12, 13]}into:
+                    #10:10, 9:10, 8:10, 7:10
+#                print(self.pos_dict)
+                continue
+
+            #unfinished for j and l shapes
+
+            #if move == "s": rotate clockwise thrice
 
             elif move == "q":
                 quit()
@@ -155,6 +171,8 @@ class Tetris:
 
 
     def redraw(self):
+        '''Re-draws board after a fragment collided with another/with frame'''
+
         self.new_pos = []
         self.current_pos = []
         self.pos_dict = {}
